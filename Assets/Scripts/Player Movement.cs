@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Splines;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float MoveSpeed = 5;
     private State state;
     private Warzone currentWarzone;
+    [SerializeField] float WarzoneTimer;
 
     // Start is called before the first frame update
     void Start()
@@ -60,11 +62,16 @@ public class PlayerMovement : MonoBehaviour
         {
             return;
         }
+        state = State.Warzone;
         currentWarzone = warzone;
+        WarzoneTimer = 0;
+
         Debug.Log("Entered Warzone !");
     } 
     void ManageWarzoneState()
     {
-
+        WarzoneTimer += Time.deltaTime;
+        float splinePercentage = WarzoneTimer / 2;
+        transform.position = currentWarzone.GetPlayerSpline().EvaluatePosition(splinePercentage);
     }
 }
