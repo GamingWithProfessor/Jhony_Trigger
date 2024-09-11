@@ -8,10 +8,13 @@ public class PlayerMovement : MonoBehaviour
     enum State { Idle, Run, Flip, Warzone}
 
     [SerializeField] PlayerAnimator PlayerAnimator;
-    [SerializeField] float MoveSpeed = 5;
+    [SerializeField] PlayerIk playerIk;
+
+    [SerializeField] float MoveSpeed;    
+    [SerializeField] float slowMoScale;
+    [SerializeField] float WarzoneTimer;
     private State state;
     private Warzone currentWarzone;
-    [SerializeField] float WarzoneTimer;
 
     // Start is called before the first frame update
     void Start()
@@ -66,12 +69,31 @@ public class PlayerMovement : MonoBehaviour
         currentWarzone = warzone;
         WarzoneTimer = 0;
 
+        Time.timeScale = slowMoScale;
+
+        playerIk.ConfigureIK(currentWarzone.GetIKTarget());
+
+        PlayerAnimator.Play(currentWarzone.GetAnimationToPlay());
+
         Debug.Log("Entered Warzone !");
     } 
     void ManageWarzoneState()
     {
         WarzoneTimer += Time.deltaTime;
-        float splinePercentage = WarzoneTimer / 2;
+        float splinePercentage = WarzoneTimer / currentWarzone.GetDuration();
         transform.position = currentWarzone.GetPlayerSpline().EvaluatePosition(splinePercentage);
+
+        if (splinePercentage >= 1)
+        {
+            ExitWarzone();
+        }
+    }
+    void ExitWarzone()
+    {
+        state = State.Run;
+        currentWarzone = null;
+        PlayerAnimator.Play("Run", 1);
+        Time.timeScale = 1;
+        playerIk.DisableIK();
     }
 }
