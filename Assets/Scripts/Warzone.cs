@@ -5,9 +5,12 @@ using UnityEngine.Splines;
 
 public class Warzone : MonoBehaviour
 {
+    [Header ("References")]
     [SerializeField] SplineContainer playerSpline;
     [SerializeField] Transform ikTarget;
+    [SerializeField] SplineAnimate ikSplineAnimate;
 
+    [Header("Settings")]
     [SerializeField] float duration;
     [SerializeField] float animatorSpeed;
     [SerializeField] string animationToPlay;
@@ -15,13 +18,18 @@ public class Warzone : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        ikSplineAnimate.Duration = duration;
     }
 
     // Update is called once per frame
     void Update()
     {
         
+    }
+
+    public void StartAnimatingIKTarget()
+    {
+        ikSplineAnimate.Play();
     }
 
     public Spline GetPlayerSpline()

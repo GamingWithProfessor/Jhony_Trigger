@@ -67,7 +67,12 @@ public class PlayerMovement : MonoBehaviour
         }
         state = State.Warzone;
         currentWarzone = warzone;
+
+        currentWarzone.StartAnimatingIKTarget();
+
         WarzoneTimer = 0;
+
+        PlayerAnimator.Play(currentWarzone.GetAnimationToPlay(), currentWarzone.GetAnimatorSpeed());
 
         Time.timeScale = slowMoScale;
 
